@@ -1,6 +1,8 @@
-﻿namespace APIPedidos.Model;
+﻿using Flunt.Notifications;
 
-public abstract class Entity
+namespace APIPedidos.Model;
+
+public abstract class Entity : Notifiable<Notification>
 {
     protected Entity()
     {

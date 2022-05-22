@@ -1,4 +1,5 @@
 ﻿using APIPedidos.Model.Product;
+using Flunt.Notifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIPedidos.Data;
@@ -12,6 +13,7 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Ignore<Notification>();
         modelBuilder.Entity<Product>()
             .Property(p => p.Description).HasMaxLength(255);
         modelBuilder.Entity<Product>()

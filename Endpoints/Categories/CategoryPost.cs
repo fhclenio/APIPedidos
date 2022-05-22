@@ -7,14 +7,19 @@ public class CategoryPost
 {
     public static string Template => "/categories";
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() };
-    public static Delegate Handle => Action;
+    public static Delegate Handle => InsertCategory;
 
-    public static IResult Action(CategoryRequest categoryRequest, ApplicationDbContext context)
+    public static IResult InsertCategory(CategoryRequest categoryRequest, ApplicationDbContext context)
     {
-        var category = new Category
+        var category = new Category(categoryRequest.Name, "Clenio", "Clenio", categoryRequest.Active);
+
+        if (!category.IsValid)
         {
-            Name = categoryRequest.Name
-        };
+            var errors = category.Notifications
+                .GroupBy(g => g.Key)
+                .ToDictionary(g => g.Key, g => g.Select(x => x.Message).ToArray());
+            return Results.ValidationProblem(errors);
+        }
 
         context.Category.Add(category);
         context.SaveChanges();
