@@ -4,17 +4,31 @@ namespace APIPedidos.Model.Product;
 
 public class Category : Entity
 {
+    public string Name { get; private set; }
+    public bool Active { get; private set; }
     public Category(string name, string createdBy, string editedBy, bool active)
     {
-        var contract = new Contract<Category>()
-            .IsNotNullOrEmpty(name, "Name");
-        AddNotifications(contract);
-
         Name = name;
         Active = active;
         CreatedOn = DateTime.Now;
         EditedOn = DateTime.Now;
+
+        Validate();
     }
-    public string Name { get; set; }
-    public bool Active { get; set; }
+
+    private void Validate()
+    {
+        var contract = new Contract<Category>()
+                    .IsNotNullOrEmpty(Name, "Name")
+                    .IsGreaterOrEqualsThan(Name, 2, "Name");
+        AddNotifications(contract);
+    }
+
+    public void EditInfo(string name, bool active)
+    {
+        Name = name;
+        Active = active;
+
+        Validate();
+    }
 }

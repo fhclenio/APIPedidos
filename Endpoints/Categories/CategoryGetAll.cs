@@ -12,6 +12,10 @@ public class CategoryGetAll
     public static IResult GetAllCategories(ApplicationDbContext context)
     {
         var categories = context.Category.ToList();
+
+        if (categories.Count == 0)
+            return Results.NotFound("There are no categories registered.");
+
         var response = categories.Select(c => new CategoryResponse { Name = c.Name, Active = c.Active, Id = c.Id });
 
         return Results.Ok(response);
