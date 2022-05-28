@@ -16,7 +16,7 @@ public class CategoryGetAll
         if (categories.Count == 0)
             return Results.NotFound("There are no categories registered.");
 
-        var response = categories.Select(c => new CategoryResponse { Name = c.Name, Active = c.Active, Id = c.Id });
+        var response = categories.Select(c => new CategoryResponse(c.Id, c.Name, c.Active));
 
         return Results.Ok(response);
     }
