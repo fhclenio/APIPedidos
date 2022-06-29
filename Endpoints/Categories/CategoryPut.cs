@@ -1,5 +1,6 @@
 ﻿using APIPedidos.Data;
 using APIPedidos.Model.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIPedidos.Endpoints.Categories;
@@ -10,6 +11,7 @@ public class CategoryPut
     public static string[] Methods => new string[] { HttpMethod.Put.ToString() };
     public static Delegate Handle => UpdateCategory;
 
+    [Authorize]
     public static IResult UpdateCategory([FromRoute] Guid id ,CategoryRequest categoryRequest, ApplicationDbContext context)
     {
         var category = context.Category.Where(c => c.Id == id).FirstOrDefault();

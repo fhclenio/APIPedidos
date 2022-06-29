@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Microsoft.Data.SqlClient;
+﻿using APIPedidos.Data.Dapper.Employees;
 
 namespace APIPedidos.Endpoints.Employees;
 
@@ -9,22 +8,13 @@ public class EmployeeGetAll
     public static string[] Methods => new string[] { HttpMethod.Get.ToString() };
     public static Delegate Handle => GetAllEmployees;
 
-    public static IResult GetAllEmployees(int? pages, int? rows, IConfiguration config)
+    public static IResult GetAllEmployees(int? pages, int? rows, GetAllUsers query)
     {
         Dictionary<string, string[]> errors = Validate(pages, rows);
-        if(errors.Count > 0)
+        if (errors.Count > 0)
             return Results.ValidationProblem(errors);
 
-        SqlConnection conn = new SqlConnection(config.GetConnectionString("Pedidos"));
-        string query = @"SELECT Email,
-                        ClaimValue as 'Name'
-                        FROM AspNetUsers AS u
-                        LEFT JOIN AspNetUserClaims
-                        ON u.Id = UserId AND ClaimType = 'Name'
-                        ORDER BY Name
-                        OFFSET (@pages - 1) * @rows ROWS
-                        FETCH NEXT @rows ROWS ONLY";
-        IEnumerable<EmployeeResponse> employees = conn.Query<EmployeeResponse>(query, new { pages, rows });
+        IEnumerable<EmployeeResponse> employees = query.Execute(pages.Value, rows.Value);
 
         if (employees.Count() == 0)
             return Results.NotFound("There are no employees registered.");
@@ -37,7 +27,7 @@ public class EmployeeGetAll
         List<string> errorsList = new List<string>();
         if (pages == null)
         {
-            errorsList.Add("Number of pages cannot be null."); 
+            errorsList.Add("Number of pages cannot be null.");
         }
         if (rows == null)
         {

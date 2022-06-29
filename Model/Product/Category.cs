@@ -10,6 +10,8 @@ public class Category : Entity
     {
         Name = name;
         Active = active;
+        CreatedBy = createdBy;
+        EditedBy = editedBy;
         CreatedOn = DateTime.Now;
         EditedOn = DateTime.Now;
 

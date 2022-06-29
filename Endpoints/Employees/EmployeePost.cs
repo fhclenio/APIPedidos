@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
 namespace APIPedidos.Endpoints.Employees;
@@ -8,6 +9,7 @@ public class EmployeePost
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() };
     public static Delegate Handle => InsertEmployee;
 
+    [Authorize]
     public static IResult InsertEmployee(EmployeeRequest employeeRequest, UserManager<IdentityUser> userManager)
     {
         IdentityUser user = new IdentityUser
